@@ -6,7 +6,7 @@ $query = "SELECT * FROM userevalcheck WHERE USERID=$userid AND IDEAID=$ideaid";
 $result = mysqli_query($conn, $query);
 if($result){
     $row = mysqli_fetch_assoc($result);
-    echo $row["CREAT"]."/_/"["LOGIC"]."/_/"["REAL"]."/_/";
+    echo $row["CRE"]."/_/"["LOG"]."/_/"["REA"]."/_/";
 }
 else{
     echo "ERROR/_/";

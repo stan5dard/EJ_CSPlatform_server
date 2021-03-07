@@ -1,11 +1,16 @@
 <?php
-$conn = mysqli_connect('localhost','root','rootroot','ej_idea');
-$query = "SELECT * FROM issue1_idea";
-$result = mysqli_query($conn, $query);
+$conn = mysqli_connect('localhost','root','','db_condition1');
+$query_issue = "SELECT ISSUENUM FROM appinfo";
+$result_issue = mysqli_query($conn, $query_issue);
+$issue = mysqli_fetch_array($result_issue)[0];
+$target_table = "issue".$issue."_idea";
+
+$query_idea = "SELECT * FROM $target_table";
+$result = mysqli_query($conn, $query_idea);
 if($result){
     while ($row = mysqli_fetch_array($result))
     {
-        echo $row['IDEAID']."/_/".$row['USERID']."/_/".$row['IDEATITLE']."/_/".$row['IDEAEX']."/_/".$row['CREAT']."/_/".$row['LOGIC']."/_/".$row['REA']."/_/";
+        echo $row['PK']."/_/".$row['USERID']."/_/".$row['IDEATITLE']."/_/".$row['IDEAEX']."/_/".$row['CRE']."/_/".$row['LGT']."/_/".$row['REA']."/_/";
         echo "/__/";
     }
 }

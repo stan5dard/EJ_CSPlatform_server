@@ -1,15 +1,20 @@
 <?php
-$time = strtotime('2021-02-25 00:00:00');
+$conn = mysqli_connect('localhost', 'root', '', 'db_condition1');
 
-$conn = mysqli_connect('localhost','root','rootroot','ej_time');
+$query_date = "SELECT STARTDATE FROM appinfo";
+$result_date = mysqli_query($conn, $query_date);
+$date = mysqli_fetch_row($result_date)[0];
 
-$humantime = Days($time);
-$query1 = "UPDATE timepassed SET DATE=$humantime WHERE PK=1";
-$result1 = mysqli_query($conn, $query1);
-$query2 = "SELECT * FROM timepassed";
-$result2 = mysqli_query($conn, $query2);
-$row = mysqli_fetch_assoc($result2);
-echo $row["PROJECTNUM"]."/_/".$row["DATE"]."/_/";
+$time = strtotime($date);
+
+$days = Days($time);
+$query_update = "UPDATE appinfo SET PASSEDDAYS=$days WHERE PK=1";
+$result_update = mysqli_query($conn, $query_update);
+
+$query_passeddays = "SELECT * FROM appinfo";
+$result_passeddays = mysqli_query($conn, $query_passeddays);
+$row = mysqli_fetch_assoc($result_passeddays);
+echo $row["PROJECTNUM"]."/_/".$row["PASSEDDAYS"]."/_/";
 
 function Days ($time)
 {

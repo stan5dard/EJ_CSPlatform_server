@@ -1,30 +1,43 @@
 <?php
-$conn = mysqli_connect('localhost','root','rootroot','ej_idea');
-$userid = $_POST["USERID"];
+$conn = mysqli_connect('localhost','root','','db_condition1');
+$query_issue = "SELECT ISSUENUM FROM appinfo";
+$result_issue = mysqli_query($conn, $query_issue);
+$issue = mysqli_fetch_array($result_issue)[0];
+$target_table = "issue".$issue."_idea";
 
+$userid = $_POST["USERID"];
 $ideatitle = $_POST["IDEATITLE"];
 $ideaex = $_POST["IDEAEX"];
 
-
-
-$insert_idea_query = "INSERT INTO issue1_idea(IDEAID, USERID, IDEATITLE, IDEAEX, CREAT, LOGIC, REA) VALUES ($ideaid, $userid, $ideatitle, $ideaex, 0,0,0)";
+$insert_idea_query = "INSERT INTO $target_table(USERID, IDEATITLE, IDEAEX, CRE, LGT, REA) VALUES ($userid, $ideatitle, $ideaex, 0,0,0)";
 $result = mysqli_query($conn, $insert_idea_query);
 if($result){
+    $ideaid = mysqli_insert_id($conn);
     echo "SUCCESS/_/";
 }
 else{
     echo "ERROR/_/";
 }
 
-$conn2 = mysqli_connect('localhost', 'root', 'rootroot', 'ej_users');
-$query2 = "SELECT USERID FROM issue1_idea WHERE USERID=$userid";
-$result2 = mysqli_query($conn2, $query2);
-
-$query3 = "SELECT IDEAID FROM"
-
-$query4 = "INSERT INTO userevalcheck(USERID, IDEAID, CREAT, LOGIC, REA) VALUES ($userid)";
-while ($row = mysqli_fetch_array($result2))
-    {
-        
+$query_eval = "SELECT USERID FROM userinfo WHERE ISSUENUM=$issue";
+$result_eval = mysqli_query($conn, $query_eval);
+while ($row = mysqli_fetch_array($result_eval))
+{
+    $target_eval_table = "issue".$issue."_userevalcheck";
+    $user = $row['USERID'];
+    $query_insert = "INSERT INTO $target_eval_table(USERID, IDEAID, CRE, LGT, REA) VALUES ($user, $ideaid, 0,0,0)";
+    $result_insert = mysqli_query($conn, $query_insert);
+    if($result_insert){
+        echo "SUCCESS/_/";
     }
+    else{
+        echo "ERROR/_/";
+    }
+}
+
+$query_ideanum = "SELECT COUNT(*) FROM $target_table";
+$result_ideanum = mysqli_query($conn, $query_ideanum);
+$ideanum = mysqli_fetch_row($result_ideanum)[0];
+$query_update = "UPDATE issuelist SET IDEANUM=$ideanum WHERE PK=$issue";
+$result_update = mysqli_query($conn, $query_update);
 ?>
