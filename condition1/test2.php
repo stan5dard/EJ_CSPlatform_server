@@ -6,11 +6,14 @@ $issue = mysqli_fetch_array($result_issue)[0];
 $target_table = "issue".$issue."_opinion";
 
 $userid = $_GET["USERID"];
+$isideatag = $_GET["ISIDEATAG"];
 $tagid = $_GET["TAGID"];
 $opinionex = $_GET["OPINIONEX"];
 $group = $_GET["GRP"];
 
-$insert_opinion_query = "INSERT INTO $target_table(USERID, TAGID, OPINIONEX, GRP) VALUES ($userid, $tagid, $opinionex, $group)";
+echo $target_table;
+
+$insert_opinion_query = "INSERT INTO $target_table(USERID, ISIDEATAG, TAGID, OPINIONEX, GRP) VALUES ($userid, $isideatag, $tagid, $opinionex, $group)";
 $result = mysqli_query($conn, $insert_opinion_query);
 if($result){
     echo "SUCCESS/_/";

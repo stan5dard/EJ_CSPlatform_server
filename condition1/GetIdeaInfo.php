@@ -1,5 +1,5 @@
 <?php
-$conn = mysqli_connect('localhost','root','','db_condition1');
+$conn = mysqli_connect('localhost','root','rootroot','db_condition1');
 $query_issue = "SELECT ISSUENUM FROM appinfo";
 $result_issue = mysqli_query($conn, $query_issue);
 $issue = mysqli_fetch_array($result_issue)[0];
