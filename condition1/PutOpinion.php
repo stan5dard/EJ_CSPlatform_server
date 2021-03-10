@@ -1,25 +1,25 @@
 <?php
-$conn = mysqli_connect('localhost','root','rootroot','db_condition1');
-$query_issue = "SELECT ISSUENUM FROM appinfo";
-$result_issue = mysqli_query($conn, $query_issue);
-$issue = mysqli_fetch_array($result_issue)[0];
-$target_table = "issue".$issue."_opinion";
-
+$conn = mysqli_connect('localhost','root','','db_condition1');
 $userid = $_POST["USERID"];
 $isideatag = $_POST["ISIDEATAG"];
 $tagid = $_POST["TAGID"];
 $opinionex = $_POST["OPINIONEX"];
 $group = $_POST["GRP"];
 
-echo $target_table;
+$query_issue = "SELECT ISSUENUM FROM userinfo WHERE USERID=$userid";
+$result_issue = mysqli_query($conn, $query_issue);
+$issue = mysqli_fetch_array($result_issue)[0];
+$target_table = "issue".$issue."_opinion";
 
-$insert_opinion_query = "INSERT INTO $target_table(USERID, ISIDEATAG, TAGID, OPINIONEX, GRP) VALUES ($userid, $isideatag, $tagid, $opinionex, $group)";
+
+
+$insert_opinion_query = "INSERT INTO $target_table(USERID, ISIDEATAG, TAGID, OPINIONEX, GRP) VALUES ($userid, $isideatag, $tagid, '$opinionex', $group)";
 $result = mysqli_query($conn, $insert_opinion_query);
 if($result){
-    echo "SUCCESS/_/";
+    echo "opinion insertion".$opinionex."SUCCESS/_/";
 }
 else{
-    echo "ERROR/_/";
+    echo "opinion insertion ".$opinionex."ERROR/_/";
 }
 
 $query_opinionnum = "SELECT COUNT(*) FROM $target_table";

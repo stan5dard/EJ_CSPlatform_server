@@ -1,42 +1,39 @@
 <?php
-$conn = mysqli_connect('localhost','root','rootroot','db_condition1');
-$query_issue = "SELECT ISSUENUM FROM appinfo";
+$conn = mysqli_connect('localhost','root','','db_condition1');
+$userid = $_GET["USERID"];
+$ideaid = $_GET["IDEAID"];
+$creat = $_GET["CREAT"];
+$logic = $_GET["LOGIC"];
+$real = $_GET["REAL"];
+$query_issue = "SELECT ISSUENUM FROM userinfo WHERE USERID=$userid";
 $result_issue = mysqli_query($conn, $query_issue);
 $issue = mysqli_fetch_array($result_issue)[0];
-$target_table = "issue".$issue."_idea";
+$target_table = "issue".$issue."_userevalcheck";
 
-$userid = $_GET["USERID"];
-$ideatitle = $_GET["IDEATITLE"];
-$ideaex = $_GET["IDEAEX"];
-
-$insert_idea_query = "INSERT INTO $target_table(USERID, IDEATITLE, IDEAEX, CRE, LGT, REA) VALUES ($userid, $ideatitle, $ideaex, 0,0,0)";
-$result = mysqli_query($conn, $insert_idea_query);
+$query = "UPDATE $target_table SET CRE=$creat, LGT=$logic, REA=$real WHERE USERID=$userid AND IDEAID=$ideaid";
+$result = mysqli_query($conn, $query);
 if($result){
-    echo "idea insertion SUCCESS/_/";
+    echo "SUCCESS/_/";
 }
 else{
-    echo "idea insertion ERROR/_/";
-}
-$ideaid = mysqli_insert_id($conn);
-$query_eval = "SELECT USERID FROM userinfo WHERE ISSUENUM=$issue";
-$result_eval = mysqli_query($conn, $query_eval);
-while ($row = mysqli_fetch_array($result_eval))
-{
-    $target_eval_table = "issue".$issue."_userevalcheck";
-    $user = $row['USERID'];
-    $query_insert = "INSERT INTO $target_eval_table(USERID, IDEAID, CRE, LGT, REA) VALUES ($user, $ideaid, 0,0,0)";
-    $result_insert = mysqli_query($conn, $query_insert);
-    if($result_insert){
-        echo "evaluation table SUCCESS/_/";
-    }
-    else{
-        echo "evaluation table ERROR/_/";
-    }
+    echo "ERROR/_/";
 }
 
-$query_ideanum = "SELECT COUNT(*) FROM $target_table";
-$result_ideanum = mysqli_query($conn, $query_ideanum);
-$ideanum = mysqli_fetch_row($result_ideanum)[0];
-$query_update = "UPDATE issuelist SET IDEANUM=$ideanum WHERE PK=$issue";
+$target_idea_table = "issue".$issue."_idea";
+$query_cre = "SELECT COUNT(CRE) FROM $target_table WHERE IDEAID=$ideaid AND CRE=1";
+$result_cre = mysqli_query($conn, $query_cre);
+$cre = mysqli_fetch_row($result_cre)[0];
+
+$query_lgt = "SELECT COUNT(LGT) FROM $target_table WHERE IDEAID=$ideaid AND LGT=1";
+$result_lgt = mysqli_query($conn, $query_lgt);
+$lgt = mysqli_fetch_row($result_lgt)[0];
+
+$query_rea = "SELECT COUNT(REA) FROM $target_table WHERE IDEAID=$ideaid AND REA=1";
+$result_rea = mysqli_query($conn, $query_rea);
+$rea = mysqli_fetch_row($result_rea)[0];
+
+echo $cre.$lgt.$rea;
+
+$query_update = "UPDATE $target_idea_table SET CRE=$cre, LGT=$lgt, REA=$rea WHERE PK=$ideaid";
 $result_update = mysqli_query($conn, $query_update);
 ?>

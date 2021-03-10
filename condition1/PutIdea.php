@@ -1,26 +1,31 @@
 <?php
-$conn = mysqli_connect('localhost','root','rootroot','db_condition1');
-$query_issue = "SELECT ISSUENUM FROM appinfo";
-$result_issue = mysqli_query($conn, $query_issue);
-$issue = mysqli_fetch_array($result_issue)[0];
-$target_table = "issue".$issue."_idea";
+$conn = mysqli_connect('localhost','root','','db_condition1');
 
 $userid = $_POST["USERID"];
 $ideatitle = $_POST["IDEATITLE"];
 $ideaex = $_POST["IDEAEX"];
 
-echo $target_table;
+$query_issue = "SELECT ISSUENUM FROM userinfo WHERE USERID=$userid";
+$result_issue = mysqli_query($conn, $query_issue);
+$issue = mysqli_fetch_array($result_issue)[0];
+$target_table = "issue".$issue."_idea";
 
-$insert_idea_query = "INSERT INTO $target_table(USERID, IDEATITLE, IDEAEX, CRE, LGT, REA) VALUES ($userid, $ideatitle, $ideaex, 0,0,0)";
+/*
+$userid = $_POST["USERID"];
+$ideatitle = $_POST["IDEATITLE"];
+$ideaex = $_POST["IDEAEX"];
+*/
+echo $userid.$ideatitle.$ideaex;
+
+$insert_idea_query = "INSERT INTO $target_table(USERID, IDEATITLE, IDEAEX, CRE, LGT, REA) VALUES ('$userid', '$ideatitle', '$ideaex', 0,0,0)";
 $result = mysqli_query($conn, $insert_idea_query);
 if($result){
-    $ideaid = mysqli_insert_id($conn);
     echo "idea insertion SUCCESS/_/";
 }
 else{
     echo "idea insertion ERROR/_/";
 }
-
+$ideaid = mysqli_insert_id($conn);
 $query_eval = "SELECT USERID FROM userinfo WHERE ISSUENUM=$issue";
 $result_eval = mysqli_query($conn, $query_eval);
 while ($row = mysqli_fetch_array($result_eval))

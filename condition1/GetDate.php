@@ -1,5 +1,5 @@
 <?php
-$conn = mysqli_connect('localhost', 'root', 'rootroot', 'db_condition1');
+$conn = mysqli_connect('localhost', 'root', '', 'db_condition1');
 
 $query_date = "SELECT STARTDATE FROM appinfo";
 $result_date = mysqli_query($conn, $query_date);
@@ -14,8 +14,8 @@ $result_update = mysqli_query($conn, $query_update);
 $query_passeddays = "SELECT * FROM appinfo";
 $result_passeddays = mysqli_query($conn, $query_passeddays);
 $row = mysqli_fetch_assoc($result_passeddays);
-//$nth_project = nthproject_kr($row["PROJECTNUM"]);
-echo $row["PASSEDDAYS"]."/_/";
+$nth_project = nthproject_kr($row["PROJECTNUM"]);
+echo $nth_project."/_/".$row["PASSEDDAYS"]."/_/";
 
 function Days ($time)
 {
@@ -25,7 +25,7 @@ function Days ($time)
     return $numberOfdate;
 }
 
-/*
+
 function nthproject_kr($nth){
     if($nth==1){
         return "첫 번째";
@@ -36,5 +36,5 @@ function nthproject_kr($nth){
     else{
         return "세 번째";
     }
-}*/
+}
 ?>

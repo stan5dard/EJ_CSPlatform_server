@@ -1,6 +1,7 @@
 <?php
-$conn = mysqli_connect('localhost','root','rootroot','db_condition1');
-$query_issue = "SELECT ISSUENUM FROM appinfo";
+$conn = mysqli_connect('localhost','root','','db_condition1');
+$userid = $_POST["USERID"];
+$query_issue = "SELECT ISSUENUM FROM userinfo WHERE USERID=$userid";
 $result_issue = mysqli_query($conn, $query_issue);
 $issue = mysqli_fetch_array($result_issue)[0];
 $target_table = "issue".$issue."_idea";

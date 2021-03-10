@@ -1,31 +1,23 @@
 <?php
 $conn = mysqli_connect('localhost','root','','db_condition1');
-$query_issue = "SELECT ISSUENUM FROM appinfo";
+$userid = $_GET["USERID"];
+$group = $_GET["GROUP"];
+
+$query_issue = "SELECT ISSUENUM FROM userinfo WHERE USERID=$userid";
 $result_issue = mysqli_query($conn, $query_issue);
 $issue = mysqli_fetch_array($result_issue)[0];
 $target_table = "issue".$issue."_opinion";
 
-$userid = $_GET["USERID"];
-$isideatag = $_GET["ISIDEATAG"];
-$tagid = $_GET["TAGID"];
-$opinionex = $_GET["OPINIONEX"];
-$group = $_GET["GRP"];
-
-echo $target_table;
-
-$insert_opinion_query = "INSERT INTO $target_table(USERID, ISIDEATAG, TAGID, OPINIONEX, GRP) VALUES ($userid, $isideatag, $tagid, $opinionex, $group)";
-$result = mysqli_query($conn, $insert_opinion_query);
+$query = "SELECT * FROM $target_table WHERE GRP=$group ORDER BY PK";
+$result = mysqli_query($conn, $query);
 if($result){
-    echo "SUCCESS/_/";
+    while ($row = mysqli_fetch_array($result))
+    {
+        echo $row['PK']."/_/".$row['USERID']."/_/".$row['ISIDEATAG']."/_/".$row['TAGID']."/_/".$row['OPINIONEX']."/_/";
+        echo "/__/";
+    }
 }
 else{
     echo "ERROR/_/";
 }
-
-$query_opinionnum = "SELECT COUNT(*) FROM $target_table";
-$result_opinionnum = mysqli_query($conn, $query_opinionnum);
-$opinionnum = mysqli_fetch_row($result_opinionnum)[0];
-$query_update = "UPDATE issuelist SET OPINIONNUM=$opinionnum WHERE PK=$issue";
-$result_update = mysqli_query($conn, $query_update);
-
 ?>
