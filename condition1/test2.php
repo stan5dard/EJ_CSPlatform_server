@@ -1,21 +1,16 @@
 <?php
-$conn = mysqli_connect('localhost','root','','db_condition1');
-$userid = $_GET["USERID"];
-$group = $_GET["GROUP"];
+$code = $_GET["STUDENTID"];
 
-$query_issue = "SELECT ISSUENUM FROM userinfo WHERE USERID=$userid";
-$result_issue = mysqli_query($conn, $query_issue);
-$issue = mysqli_fetch_array($result_issue)[0];
-$target_table = "issue".$issue."_opinion";
+$conn = mysqli_connect('localhost','root','rootroot','db_common');
+mysqli_query($conn, "set session character_set_connection=utf8");
+mysqli_query($conn, "set session character_set_results=utf8");
+mysqli_query($conn, "set session character_set_client=utf8");
 
-$query = "SELECT * FROM $target_table WHERE GRP=$group ORDER BY PK";
+$query = "SELECT * FROM userinfo WHERE STUDENTID=$code";
 $result = mysqli_query($conn, $query);
 if($result){
-    while ($row = mysqli_fetch_array($result))
-    {
-        echo $row['PK']."/_/".$row['USERID']."/_/".$row['ISIDEATAG']."/_/".$row['TAGID']."/_/".$row['OPINIONEX']."/_/";
-        echo "/__/";
-    }
+    $row = mysqli_fetch_assoc($result);
+    echo $row["USERID"]."/_/";
 }
 else{
     echo "ERROR/_/";
