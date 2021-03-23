@@ -5,7 +5,7 @@ $creat = $_POST["CREAT"];
 $logic = $_POST["LOGIC"];
 $real = $_POST["REAL"];
 
-$conn_cond = mysqli_connect('localhost', 'root', '', 'db_common');
+$conn_cond = mysqli_connect('localhost', 'root', 'rootroot', 'db_common');
 mysqli_query($conn_cond, "set session character_set_connection=utf8");
 mysqli_query($conn_cond, "set session character_set_results=utf8");
 mysqli_query($conn_cond, "set session character_set_client=utf8");
@@ -19,14 +19,69 @@ $query_issue = "SELECT ISSUENUM FROM userinfo WHERE USERID=$userid";
 $result_issue = mysqli_query($conn_cond, $query_issue);
 $issue = mysqli_fetch_array($result_issue)[0];
 $target_table = "issue".$issue."_userevalcheck";
+$target_idea_table = "issue".$issue."_idea";
 
-$conn = mysqli_connect('localhost','root','', $db_condition);
+$conn = mysqli_connect('localhost','root','rootroot', $db_condition);
 mysqli_query($conn, "set session character_set_connection=utf8");
 mysqli_query($conn, "set session character_set_results=utf8");
 mysqli_query($conn, "set session character_set_client=utf8");
 
-$query = "UPDATE $target_table SET CRE=$creat, LGT=$logic, REA=$real WHERE USERID=$userid AND IDEAID=$ideaid";
+$query = "UPDATE $target_table SET CRE=$creat, LGT=$logic, REA=$real, HAS_EVALUATED=1 WHERE USERID=$userid AND IDEAID=$ideaid";
 $result = mysqli_query($conn, $query);
+
+//condition 2 point calculation
+if($cond==2){
+    $query_prev_eval = "SELECT * FROM $target_table WHERE USERID=$userid";
+    $result_prev_eval = mysqli_query($db_condition, $query_prev_eval);
+    $prev_cre = mysqli_fetch_assoc($result_prev_eval)["CRE"];
+    $prev_lgt = mysqli_fetch_assoc($result_prev_eval)["LGT"];
+    $prev_rea = mysqli_fetch_assoc($result_prev_eval)["REA"];
+    $prev_evaluated = mysqli_fetch_assoc($result_prev_eval)["HAS_EVALUATED"];
+    if($prev_cre==0 & $prev_lgt==0 & $prev_rea==0 & ($creat!=0 | $logic!=0 | $real!=0)){
+        $query_increase_points = "UPDATE userscore_condition2 SET POINTS=POINTS+5 WHERE USERID=$userid";
+        mysqli_query($conn_cond, $query_increase_points);
+    }
+    else if(($prev_cre!=0 | $prev_lgt!=0 | $prev_rea!=0) & $creat==0 & $logic==0 & $real==0){
+        $query_decrease_points = "UPDATE userscore_condition2 SET POINTS=POINTS-5 WHERE USERID=$userid";
+        mysqli_query($conn_cond, $query_decrease_points);
+    }
+
+    // check whether there's a user who got idea max level
+    $query_get_idea_writer = "SELECT USERID FROM $target_idea_table WHERE PK=$ideaid";
+    $result_get_idea_writer = mysqli_query($conn, $query_get_idea_writer);
+    $ideawriter = mysqli_fetch_array($result_get_idea_writer)[0];
+
+    $query_ideawriter_ideanum = "SELECT IDEANUM FROM userscore_condition2 WHERE USERID=$ideawriter";
+    $result_ideawriter_ideanum = mysqli_query($conn_cond, $query_ideawriter_ideanum);
+    $ideawriter_ideanum = mysqli_fetch_array($result_ideawriter_ideanum)[0];
+
+    $query_get_cre_for_idea = "SELECT COUNT(*) FROM $target_table WHERE IDEAID=$ideaid AND CRE=1";
+    $idea_cre = mysqli_fetch_array(mysqli_query($conn, $query_get_cre_for_idea))[0];
+    $query_get_lgt_for_idea = "SELECT COUNT(*) FROM $target_table WHERE IDEAID=$ideaid AND LGT=1";
+    $idea_lgt = mysqli_fetch_array(mysqli_query($conn, $query_get_lgt_for_idea))[0];
+    $query_get_rea_for_idea = "SELECT COUNT(*) FROM $target_table WHERE IDEAID=$ideaid AND REA=1";
+    $idea_rea = mysqli_fetch_array(mysqli_query($conn, $query_get_rea_for_idea))[0];
+    $query_get_eff_for_idea = "SELECT IS_EFFECTIVE FROM $target_idea_table WHERE IDEAID=$ideaid";
+    $eff = mysqli_fetch_array(mysqli_query($conn, $query_get_eff_for_idea))[0];
+
+    if($idea_cre >= 5 & $idea_lgt >= 5 & $idea_rea >= 5 & $eff == 0){
+        $query_set_eff = "UPDATE $target_idea_table SET IS_EFFECTIVE=1 WHERE PK=$ideaid";
+        mysqli_query($conn, $query_set_eff);
+        $query_increase_eff_idea = "UPDATE userscore_condition2 SET EFFECTIVE_IDEANUM=EFFECTIVE_IDEANUM+1 WHERE USERID=$ideawriter";
+        $query_set_ideamaxlv = "UPDATE userscore_condition2 SET IDEAMAXLV=1 WHERE USERID=$ideawriter";
+        mysqli_query($conn, $query_increase_eff_idea);
+        mysqli_query($conn, $query_set_ideamaxlv);
+    }
+    else if(($idea_cre < 5 | $idea_lgt < 5 | $idea_rea < 5) & $eff == 1){
+        $query_set_eff = "UPDATE $target_idea_table SET IS_EFFECTIVE=0 WHERE PK=$ideaid";
+        mysqli_query($conn, $query_set_eff);
+        $query_increase_eff_idea = "UPDATE userscore_condition2 SET EFFECTIVE_IDEANUM=EFFECTIVE_IDEANUM-1 WHERE USERID=$ideawriter";
+        $query_set_ideamaxlv = "UPDATE userscore_condition2 SET IDEAMAXLV=0 WHERE USERID=$ideawriter";
+        mysqli_query($conn, $query_increase_eff_idea);
+        mysqli_query($conn, $query_set_ideamaxlv);
+    }
+
+}
 
 $target_idea_table = "issue".$issue."_idea";
 $query_cre = "SELECT COUNT(CRE) FROM $target_table WHERE IDEAID=$ideaid AND CRE=1";
