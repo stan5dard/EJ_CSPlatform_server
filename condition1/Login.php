@@ -10,7 +10,7 @@ $query = "SELECT * FROM userinfo WHERE STUDENTID=$code";
 $result = mysqli_query($conn, $query);
 if($result){
     $row = mysqli_fetch_assoc($result);
-    echo $row["USERID"]."/_/".$row["USERID"]."/_/"; //logging twice for error detection in frontend
+    echo $row["USERID"]."/_/".$row["COND"]."/_/"; //logging twice for error detection in frontend
 }
 else{
     echo "ERROR/_/";
