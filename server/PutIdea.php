@@ -28,22 +28,23 @@ mysqli_query($conn, "set session character_set_client=utf8");
 // new idea insertion part
 $insert_idea_query = "INSERT INTO $target_table(USERID, IDEATITLE, IDEAEX, CRE, LGT, REA, IS_EFFECTIVE) VALUES ('$userid', '$ideatitle', '$ideaex', 0,0,0,0)";
 $result = mysqli_query($conn, $insert_idea_query);
+$ideaid = mysqli_insert_id($conn);
 if($result){
     echo "idea insertion SUCCESS/_/";
 
     // calculating idea points if condition2
     if($cond==2){
-        $query_point = "UPDATE userscore_condition2 SET POINTS=POINTS+50 WHERE USERID=$userid";
+        $query_point = "UPDATE userinfo SET POINTS=POINTS+50 WHERE USERID=$userid";
         $result_point = mysqli_query($conn_cond, $query_point);
 
         $query_idea_num = "SELECT COUNT(*) FROM $target_table WHERE USERID=$userid";
         $result_idea_num = mysqli_query($conn, $query_idea_num);
         $idea_num = mysqli_fetch_array($result_idea_num)[0];
 
-        $query_update_ideanum = "UPDATE userscore_condition2 SET IDEANUM=$idea_num WHERE USERID=$userid";
+        $query_update_ideanum = "UPDATE userinfo SET IDEANUM=$idea_num WHERE USERID=$userid";
         mysqli_query($conn_cond, $query_update_ideanum);
         if($idea_num >= 3){
-            $query_idea_king = "UPDATE userscore_condition2 SET IDEAKING=1 WHERE USERID=$userid";
+            $query_idea_king = "UPDATE userinfo SET IDEAKING=1 WHERE USERID=$userid";
             mysqli_query($conn_cond, $query_idea_king);
         }
     }
@@ -54,7 +55,7 @@ else{
 
 
 // user eval check table part
-$ideaid = mysqli_insert_id($conn);
+
 $query_eval = "SELECT USERID FROM userinfo WHERE ISSUENUM=$issue AND COND=$cond";
 $result_eval = mysqli_query($conn_cond, $query_eval);
 while ($row = mysqli_fetch_array($result_eval))

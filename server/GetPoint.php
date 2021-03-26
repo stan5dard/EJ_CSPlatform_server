@@ -9,7 +9,7 @@ $query_cond = "SELECT POINTS FROM userinfo WHERE USERID=$userid";
 $result_cond = mysqli_query($conn_cond, $query_cond);
 $points = mysqli_fetch_array($result_cond)[0];
 
-if($result){
+if($result_cond){
     echo $points."/_/";
 }
 else{

@@ -34,7 +34,7 @@ if($result){
     
     // if condition2, calculate the user score
     if($cond==2){
-        $query_point = "UPDATE userscore_condition2 SET POINTS=POINTS+20 WHERE USERID=$userid";
+        $query_point = "UPDATE userinfo SET POINTS=POINTS+20 WHERE USERID=$userid";
         $result_point = mysqli_query($conn_cond, $query_point);
 
         // calculate whether the person got opinion_king badge
@@ -42,11 +42,11 @@ if($result){
         $result_opinion_num = mysqli_query($conn, $query_opinion_num);
         $opinion_num = mysqli_fetch_array($result_opinion_num)[0];
         if($opinion_num >= 10 & $opinion_num < 20){
-            $query_opinion_king = "UPDATE userscore_condition2 SET OPINIONKING=1 WHERE USERID=$userid";
+            $query_opinion_king = "UPDATE userinfo SET OPINIONKING=1 WHERE USERID=$userid";
             mysqli_query($conn_cond, $query_opinion_king);
         }
         else if($opinion_num >= 20){
-            $query_opinion_maxlv = "UPDATE userscore_condition2 SET OPINIONMAXLV=1 WHERE USERID=$userid";
+            $query_opinion_maxlv = "UPDATE userinfo SET OPINIONMAXLV=1 WHERE USERID=$userid";
             mysqli_query($conn_cond, $query_opinion_maxlv);
         }
     }
