@@ -20,7 +20,7 @@ mysqli_query($conn, "set session character_set_connection=utf8");
 mysqli_query($conn, "set session character_set_results=utf8");
 mysqli_query($conn, "set session character_set_client=utf8");
 
-$query_idea = "SELECT * FROM $target_table";
+$query_idea = "SELECT * FROM $target_table ORDER BY PK DESC";
 $result = mysqli_query($conn, $query_idea);
 if($result){
     while ($row = mysqli_fetch_array($result))
