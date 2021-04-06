@@ -50,6 +50,11 @@ if($result){
             mysqli_query($conn_cond, $query_opinion_maxlv);
         }
     }
+
+    if($cond==3){
+        $query_communication = "UPDATE userinfo SET CUR_COMMUNICATION=CUR_COMMUNICATION+1, ACC_COMMUNICATION=ACC_COMMUNICATION+1 WHERE USERID=$userid";
+        mysqli_query($conn_cond, $query_communication);
+    }
 }
 else{
     echo "opinion insertion ".$opinionex."ERROR/_/";

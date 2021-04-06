@@ -23,10 +23,23 @@ mysqli_query($conn, "set session character_set_client=utf8");
 $query_idea = "SELECT * FROM $target_table ORDER BY PK DESC";
 $result = mysqli_query($conn, $query_idea);
 if($result){
-    while ($row = mysqli_fetch_array($result))
-    {
-        echo $row['PK']."/_/".$row['USERID']."/_/".$row['IDEATITLE']."/_/".$row['IDEAEX']."/_/".$row['CRE']."/_/".$row['LGT']."/_/".$row['REA']."/_/";
-        echo "/__/";
+    if($cond!=3){
+        while ($row = mysqli_fetch_array($result))
+        {
+            echo $row['PK']."/_/".$row['USERID']."/_/".$row['IDEATITLE']."/_/".$row['IDEAEX']."/_/".$row['CRE']."/_/".$row['LGT']."/_/".$row['REA']."/_/";
+            echo "/__/";
+        }
+    }
+    else if($cond==3){
+        while ($row = mysqli_fetch_array($result))
+        {
+            $ideawriter = $row['USERID'];
+            $query_get_user_name = "SELECT USERNAME FROM userinfo WHERE USERID=$ideawriter";
+            $result_get_user_name = mysqli_query($conn_cond, $query_get_user_name);
+            $user_name = mysqli_fetch_row($result_get_user_name)[0];
+            echo $row['PK']."/_/".$user_name."/_/".$row['IDEATITLE']."/_/".$row['IDEAEX']."/_/".$row['CRE']."/_/".$row['LGT']."/_/".$row['REA']."/_/";
+            echo "/__/";
+        }
     }
 }
 else{

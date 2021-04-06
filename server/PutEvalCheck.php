@@ -27,9 +27,18 @@ mysqli_query($conn, "set session character_set_results=utf8");
 mysqli_query($conn, "set session character_set_client=utf8");
 
 
+$query_prev_eval = "SELECT * FROM $target_table WHERE USERID=$userid AND IDEAID=$ideaid";
+$result_prev_eval = mysqli_query($conn, $query_prev_eval);
+$row = mysqli_fetch_assoc($result_prev_eval);
+$prev_cre = $row["CRE"];
+$prev_lgt = $row["LGT"];
+$prev_rea = $row["REA"];
+$prev_evaluated = $row["HAS_EVALUATED"];
+
 
 //condition 2 point calculation
 if($cond==2){
+    /*
     $query_prev_eval = "SELECT * FROM $target_table WHERE USERID=$userid AND IDEAID=$ideaid";
     $result_prev_eval = mysqli_query($conn, $query_prev_eval);
     $row = mysqli_fetch_assoc($result_prev_eval);
@@ -37,7 +46,7 @@ if($cond==2){
     $prev_lgt = $row["LGT"];
     $prev_rea = $row["REA"];
     $prev_evaluated = $row["HAS_EVALUATED"];
-
+*/
     if($prev_cre==0 & $prev_lgt==0 & $prev_rea==0 & ($creat!=0 | $logic!=0 | $real!=0)){
         $query_increase_points = "UPDATE userinfo SET POINTS=POINTS+5 WHERE USERID=$userid";
         mysqli_query($conn_cond, $query_increase_points);
@@ -45,6 +54,35 @@ if($cond==2){
     else if(($prev_cre!=0 | $prev_lgt!=0 | $prev_rea!=0) & $creat==0 & $logic==0 & $real==0){
         $query_decrease_points = "UPDATE userinfo SET POINTS=POINTS-5 WHERE USERID=$userid";
         mysqli_query($conn_cond, $query_decrease_points);
+    }
+}
+
+if($cond==3){
+    /*
+    $query_prev_eval = "SELECT * FROM $target_table WHERE USERID=$userid AND IDEAID=$ideaid";
+    $result_prev_eval = mysqli_query($conn, $query_prev_eval);
+    $row = mysqli_fetch_assoc($result_prev_eval);
+    $prev_cre = $row["CRE"];
+    $prev_lgt = $row["LGT"];
+    $prev_rea = $row["REA"];
+    $prev_evaluated = $row["HAS_EVALUATED"];
+*/
+    if($prev_cre==0 & $prev_lgt==0 & $prev_rea==0 & ($creat!=0 | $logic!=0 | $real!=0)){
+        $query_increase_points = "UPDATE userinfo SET CUR_COOPERATION=CUR_COOPERATION+1, ACC_COOPERATION=ACC_COOPERATION+1 WHERE USERID=$userid";
+        mysqli_query($conn_cond, $query_increase_points);
+    }
+    else if(($prev_cre!=0 | $prev_lgt!=0 | $prev_rea!=0) & $creat==0 & $logic==0 & $real==0){
+        $query_get_cur_cooperation = "SELECT CUR_COOPERATION FROM userinfo WHERE USERID=$userid";
+        $result_get_cur_cooperation = mysqli_query($conn_cond, $query_get_cur_cooperation);
+        $cur_cooperation = mysqli_fetch_row($result_get_cur_cooperation)[0];
+        if($cur_cooperation > 0){
+            $query_decrease_points = "UPDATE userinfo SET CUR_COOPERATION=CUR_COOPERATION-1, ACC_COOPERATION=ACC_COOPERATION-1 WHERE USERID=$userid";
+            mysqli_query($conn_cond, $query_decrease_points);
+        }
+        else if($cur_cooperation <= 0){
+            $query_decrease_points = "UPDATE userinfo SET ACC_COOPERATION=ACC_COOPERATION-1 WHERE USERID=$userid";
+            mysqli_query($conn_cond, $query_decrease_points);
+        }
     }
 }
 
@@ -125,5 +163,49 @@ if($cond==2){
     }
 }
 
+if($cond==3){
+    $query_get_idea_writer = "SELECT USERID FROM $target_idea_table WHERE PK=$ideaid";
+    $result_get_idea_writer = mysqli_query($conn, $query_get_idea_writer);
+    $ideawriter = mysqli_fetch_array($result_get_idea_writer)[0];
+    echo $ideawriter."/_/";
+
+    if($prev_cre==0 & $creat==1){
+        $query_increase_creativity = "UPDATE userinfo SET CUR_CREATIVITY=CUR_CREATIVITY+1, ACC_CREATIVITY=ACC_CREATIVITY+1 WHERE USERID=$ideawriter";
+        mysqli_query($conn_cond, $query_increase_creativity);
+    }
+    else if($prev_cre==1 & $creat==0){
+        $query_get_cur_creativity = "SELECT CUR_CREATIVITY FROM userinfo WHERE USERID=$ideawriter";
+        $result_get_cur_creativity = mysqli_query($conn_cond, $query_get_cur_creativity);
+        $cur_creativity = mysqli_fetch_row($result_get_cur_creativity)[0];
+        if($cur_creativity > 0){
+            $query_decrease_points = "UPDATE userinfo SET CUR_CREATIVITY=CUR_CREATIVITY-1, ACC_CREATIVITY=ACC_CREATIVITY-1 WHERE USERID=$ideawriter";
+            mysqli_query($conn_cond, $query_decrease_points);
+        }
+        else if($cur_creativity <= 0){
+            $query_decrease_points = "UPDATE userinfo SET ACC_CREATIVITY=ACC_CREATIVITY-1 WHERE USERID=$ideawriter";
+            mysqli_query($conn_cond, $query_decrease_points);
+        }
+    }
+
+
+    if(($prev_lgt==0 & $logic==1) | ($prev_rea==0 & $real==1)){
+        $query_increase_problemsolving = "UPDATE userinfo SET CUR_PROBLEMSOLVING=CUR_PROBLEMSOLVING+1, ACC_PROBLEMSOLVING=ACC_PROBLEMSOLVING+1 WHERE USERID=$ideawriter";
+        mysqli_query($conn_cond, $query_increase_problemsolving);
+    }
+    else if(($prev_lgt==1 & $logic==0) | ($prev_real==1 & $real==0)){
+        $query_get_cur_problemsolving = "SELECT CUR_PROBLEMSOLVING FROM userinfo WHERE USERID=$ideawriter";
+        $result_get_cur_problemsolving = mysqli_query($conn_cond, $query_get_cur_problemsolving);
+        $cur_problemsolving = mysqli_fetch_row($result_get_cur_problemsolving)[0];
+        if($cur_problemsolving > 0){
+            $query_decrease_points = "UPDATE userinfo SET CUR_PROBLEMSOLVING=CUR_PROBLEMSOLVING-1, ACC_PROBLEMSOLVING=ACC_PROBLEMSOLVING-1 WHERE USERID=$ideawriter";
+            mysqli_query($conn_cond, $query_decrease_points);
+        }
+        else if($cur_problemsolving <= 0){
+            $query_decrease_points = "UPDATE userinfo SET ACC_PROBLEMSOLVING=ACC_PROBLEMSOLVING-1 WHERE USERID=$ideawriter";
+            mysqli_query($conn_cond, $query_decrease_points);
+        }
+    }
+    
+}
 
 ?>

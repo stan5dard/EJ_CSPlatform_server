@@ -25,10 +25,23 @@ mysqli_query($conn, "set session character_set_client=utf8");
 $query = "SELECT * FROM $target_table WHERE GRP=$group ORDER BY PK";
 $result = mysqli_query($conn, $query);
 if($result){
-    while ($row = mysqli_fetch_array($result))
-    {
-        echo $row['PK']."/_/".$row['USERID']."/_/".$row['ISIDEATAG']."/_/".$row['TAGID']."/_/".$row['OPINIONEX']."/_/";
-        echo "/__/";
+    if($cond!=3){
+        while ($row = mysqli_fetch_array($result))
+        {
+            echo $row['PK']."/_/".$row['USERID']."/_/".$row['ISIDEATAG']."/_/".$row['TAGID']."/_/".$row['OPINIONEX']."/_/";
+            echo "/__/";
+        }
+    }
+    else if($cond==3){
+        while ($row = mysqli_fetch_array($result))
+        {
+            $ideawriter = $row['USERID'];
+            $query_get_user_name = "SELECT USERNAME FROM userinfo WHERE USERID=$ideawriter";
+            $result_get_user_name = mysqli_query($conn_cond, $query_get_user_name);
+            $user_name = mysqli_fetch_row($result_get_user_name)[0];
+            echo $row['PK']."/_/".$user_name."/_/".$row['ISIDEATAG']."/_/".$row['TAGID']."/_/".$row['OPINIONEX']."/_/";
+            echo "/__/";
+        }
     }
 }
 else{
