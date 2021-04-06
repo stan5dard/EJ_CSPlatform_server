@@ -24,9 +24,18 @@ mysqli_query($conn, "set session character_set_client=utf8");
 
 $query_user = "SELECT USERID FROM $target_table WHERE PK=$idea_pk";
 $result_user = mysqli_query($conn, $query_user);
+$user = mysqli_fetch_row($result_user)[0];
+
+$query_user_name = "SELECT USERNAME FROM userinfo WHERE USERID=$user";
+$result_user_name = mysqli_query($conn_cond, $query_user_name);
+$user_name = mysqli_fetch_row($result_user_name)[0];
 if($result_user){
-    $user = mysqli_fetch_row($result_user)[0];
-    echo $user."/_/";
+    if($cond!=3){
+        echo $user."/_/";
+    }
+    else if($cond==3){
+        echo $user_name."/_/";
+    }    
 }
 else{
     echo "ERROR/_/";
