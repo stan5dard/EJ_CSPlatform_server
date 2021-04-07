@@ -188,11 +188,29 @@ if($cond==3){
     }
 
 
-    if(($prev_lgt==0 & $logic==1) | ($prev_rea==0 & $real==1)){
+    if($prev_lgt==0 & $logic==1){
         $query_increase_problemsolving = "UPDATE userinfo SET CUR_PROBLEMSOLVING=CUR_PROBLEMSOLVING+1, ACC_PROBLEMSOLVING=ACC_PROBLEMSOLVING+1 WHERE USERID=$ideawriter";
         mysqli_query($conn_cond, $query_increase_problemsolving);
     }
-    else if(($prev_lgt==1 & $logic==0) | ($prev_real==1 & $real==0)){
+    else if($prev_lgt==1 & $logic==0){
+        $query_get_cur_problemsolving = "SELECT CUR_PROBLEMSOLVING FROM userinfo WHERE USERID=$ideawriter";
+        $result_get_cur_problemsolving = mysqli_query($conn_cond, $query_get_cur_problemsolving);
+        $cur_problemsolving = mysqli_fetch_row($result_get_cur_problemsolving)[0];
+        if($cur_problemsolving > 0){
+            $query_decrease_points = "UPDATE userinfo SET CUR_PROBLEMSOLVING=CUR_PROBLEMSOLVING-1, ACC_PROBLEMSOLVING=ACC_PROBLEMSOLVING-1 WHERE USERID=$ideawriter";
+            mysqli_query($conn_cond, $query_decrease_points);
+        }
+        else if($cur_problemsolving <= 0){
+            $query_decrease_points = "UPDATE userinfo SET ACC_PROBLEMSOLVING=ACC_PROBLEMSOLVING-1 WHERE USERID=$ideawriter";
+            mysqli_query($conn_cond, $query_decrease_points);
+        }
+    }
+
+    if($prev_rea==0 & $real==1){
+        $query_increase_problemsolving = "UPDATE userinfo SET CUR_PROBLEMSOLVING=CUR_PROBLEMSOLVING+1, ACC_PROBLEMSOLVING=ACC_PROBLEMSOLVING+1 WHERE USERID=$ideawriter";
+        mysqli_query($conn_cond, $query_increase_problemsolving);
+    }
+    else if($prev_rea==1 & $real==0){
         $query_get_cur_problemsolving = "SELECT CUR_PROBLEMSOLVING FROM userinfo WHERE USERID=$ideawriter";
         $result_get_cur_problemsolving = mysqli_query($conn_cond, $query_get_cur_problemsolving);
         $cur_problemsolving = mysqli_fetch_row($result_get_cur_problemsolving)[0];
