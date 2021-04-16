@@ -1,27 +1,28 @@
 <?php
 $userid = $_GET["USERID"];
-$date = $_GET["DATE"];
-$timestamp = $_GET["TIMESTAMP"];
-$logging = $_GET["LOGGING"];
-$actionmeaning = $_GET["ACTIONMEANING"];
-$data = $_GET["DATE"];
+$ideaid = $_GET["IDEAID"];
 
-$conn = mysqli_connect('localhost', 'root', 'rootroot', 'db_log');
+$conn_cond = mysqli_connect('localhost', 'root', 'rootroot', 'db_common');
+mysqli_query($conn_cond, "set session character_set_connection=utf8");
+mysqli_query($conn_cond, "set session character_set_results=utf8");
+mysqli_query($conn_cond, "set session character_set_client=utf8");
+$query_cond = "SELECT COND FROM userinfo WHERE USERID=$userid";
+$result_cond = mysqli_query($conn_cond, $query_cond);
+$cond = mysqli_fetch_array($result_cond)[0];
+$db_condition = "db_condition".$cond;
+
+$query_issue = "SELECT ISSUENUM FROM userinfo WHERE USERID=$userid";
+$result_issue = mysqli_query($conn_cond, $query_issue);
+$issue = mysqli_fetch_array($result_issue)[0];
+$target_table = "issue".$issue."_opinion";
+
+$conn = mysqli_connect('localhost','root','rootroot',$db_condition);
 mysqli_query($conn, "set session character_set_connection=utf8");
 mysqli_query($conn, "set session character_set_results=utf8");
 mysqli_query($conn, "set session character_set_client=utf8");
 
-$target_table = "log_".$userid;
-$query_log = "INSERT INTO $target_table(LOGDATE, LOGTIMESTAMP, LOGGING, ACTIONMEANING, LOGDATA) VALUES ($date, $timestamp, $logging, $actionmeaning, $data)";
-$result_log = mysqli_query($conn, $query_log);
-
-if($result_log){
-    echo "SUCCESS/_/";
-}
-else{
-    $query_create_table = "CREATE TABLE $target_table(PK INT NOT NULL AUTO_INCREMENT, LOGDATE VARCHAR(200) DEFAULT NULL, LOGTIMESTAMP VARCHAR(200) DEFAULT NULL, LOGGING VARCHAR(200) DEFAULT NULL, ACTIONMEANING VARCHAR(200) DEFAULT NULL, LOGDATA VARCHAR(200) DEFAULT NULL, PRIMARY KEY(PK)) DEFAULT CHARSET=utf8";
-    mysqli_query($conn, $query_create_table);
-    mysqli_query($conn, $query_log);
-    echo "GENERATED TABLE/_/";
-}
+$query_opinion_count = "SELECT COUNT(*) FROM $target_table WHERE GRP=$ideaid";
+$result_opinion_count = mysqli_query($conn, $query_opinion_count);
+$opinion_count = mysqli_fetch_row($result_opinion_count)[0];
+echo $opinion_count."/_/";
 ?>
