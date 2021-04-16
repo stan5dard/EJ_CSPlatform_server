@@ -1,10 +1,10 @@
 <?php
 $userid = $_POST["USERID"];
-$date = $_POST["DATE"];
-$timestamp = $_POST["TIMESTAMP"];
+$logdate = $_POST["DATE"];
+$logtimestamp = $_POST["TIMESTAMP"];
 $logging = $_POST["LOGGING"];
 $actionmeaning = $_POST["ACTIONMEANING"];
-$data = $_POST["DATE"];
+$logdata = $_POST["DATA"];
 
 $conn = mysqli_connect('localhost', 'root', 'rootroot', 'db_log');
 mysqli_query($conn, "set session character_set_connection=utf8");
@@ -12,10 +12,10 @@ mysqli_query($conn, "set session character_set_results=utf8");
 mysqli_query($conn, "set session character_set_client=utf8");
 
 $target_table = "log_".$userid;
-$query_log = "INSERT INTO $target_table(LOGDATE, LOGTIMESTAMP, LOGGING, ACTIONMEANING, LOGDATA) VALUES ($date, $timestamp, $logging, $actionmeaning, $data)";
+$query_log = "INSERT INTO $target_table(LOGDATE, LOGTIMESTAMP, LOGGING, ACTIONMEANING, LOGDATA) VALUES ('$logdate', '$logtimestamp', '$logging', '$actionmeaning', '$logdata')";
 $result_log = mysqli_query($conn, $query_log);
 
-if($result){
+if($result_log){
     echo "SUCCESS/_/";
 }
 else{
