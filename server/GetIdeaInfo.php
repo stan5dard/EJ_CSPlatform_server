@@ -41,6 +41,10 @@ if($result){
     else if($cond==3){
         while ($row = mysqli_fetch_array($result))
         {
+            $ideaid = $row['PK'];
+            $query_opinion_count = "SELECT COUNT(*) FROM $target_opinion_table WHERE GRP=$ideaid";
+            $result_opinion_count = mysqli_query($conn, $query_opinion_count);
+            $opinion_count = mysqli_fetch_row($result_opinion_count)[0];
             $ideawriter = $row['USERID'];
             $query_get_user_name = "SELECT USERNAME FROM userinfo WHERE USERID=$ideawriter";
             $result_get_user_name = mysqli_query($conn_cond, $query_get_user_name);
