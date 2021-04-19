@@ -43,7 +43,7 @@ if($result){
 
         $query_update_ideanum = "UPDATE userinfo SET IDEANUM=$idea_num WHERE USERID=$userid";
         mysqli_query($conn_cond, $query_update_ideanum);
-        if($idea_num >= 3){
+        if($idea_num >= 5){
             $query_idea_king = "UPDATE userinfo SET IDEAKING=1 WHERE USERID=$userid";
             mysqli_query($conn_cond, $query_idea_king);
         }

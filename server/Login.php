@@ -11,7 +11,12 @@ $result = mysqli_query($conn, $query);
 
 if($result){
     $row = mysqli_fetch_assoc($result);
-    echo $row["USERID"]."/_/".$row["COND"]."/_/".$row["COND3_FIRSTLAUNCH"]."/_/";
+    if($row["ALLOW_CONNECTION"]==1){
+        echo $row["USERID"]."/_/".$row["COND"]."/_/".$row["COND3_FIRSTLAUNCH"]."/_/";
+    }
+    else{
+        echo "NOT ALLOWED/_/";
+    }
 }
 else{
     echo "ERROR/_/";
