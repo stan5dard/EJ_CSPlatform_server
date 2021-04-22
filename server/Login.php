@@ -21,7 +21,7 @@ if($result){
             $query_get_user_name = "SELECT USERNAME FROM userinfo WHERE STUDENTID=$code";
             $result_get_user_name = mysqli_query($conn, $query_get_user_name);
             $user_name = mysqli_fetch_row($result_get_user_name)[0];
-            echo $user_name."/_/".$row["COND"]."/_/".$row["COND3_FIRSTLAUNCH"]."/_/";
+            echo $row["USERID"]."/_/".$row["COND"]."/_/".$row["COND3_FIRSTLAUNCH"]."/_/".$user_name."/_/";
         }
     }
     else{

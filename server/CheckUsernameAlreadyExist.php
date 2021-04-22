@@ -1,5 +1,5 @@
 <?php
-$name = $_GET["NAME"];
+$name = $_POST["NAME"];
 
 $conn_cond = mysqli_connect('localhost', 'root', 'rootroot', 'db_common');
 mysqli_query($conn_cond, "set session character_set_connection=utf8");
