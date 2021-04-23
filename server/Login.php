@@ -1,14 +1,14 @@
 <?php
 $code = $_POST["STUDENTID"];
-
+//echo $code;
 $conn = mysqli_connect('localhost','root','rootroot','db_common');
 mysqli_query($conn, "set session character_set_connection=utf8");
 mysqli_query($conn, "set session character_set_results=utf8");
 mysqli_query($conn, "set session character_set_client=utf8");
-$query_cond = "SELECT COND FROM userinfo WHERE STUDENTID=$code";
+$query_cond = "SELECT COND FROM userinfo WHERE STUDENTID='$code'";
 $result_cond = mysqli_query($conn, $query_cond);
 $cond = mysqli_fetch_array($result_cond)[0];
-$query = "SELECT * FROM userinfo WHERE STUDENTID=$code";
+$query = "SELECT * FROM userinfo WHERE STUDENTID='$code'";
 $result = mysqli_query($conn, $query);
 
 if($result){
